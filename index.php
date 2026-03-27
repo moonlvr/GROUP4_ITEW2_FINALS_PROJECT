@@ -1,0 +1,301 @@
+<?php
+session_start();
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>School Portal — Student Management System</title>
+  <!-- jQuery CDN -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <!-- External Stylesheet -->
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+</head>
+<body>
+ 
+<!-- ===== LOGIN ===== -->
+<div id="login-screen" class="active">
+  <div class="login-panel-left">
+    <div class="lpl-content">
+      <div class="brand-title">School <span>Portal</span></div>
+      <div class="brand-sub">Student Record Management</div>
+      <div class="brand-comment">UNIVERSITY OF CABUYAO LAGUNA</div>
+    </div>
+    <div class="lpl-tagline">
+      <p>System for managing student records, grades, attendance, and sections.</p>
+    </div>
+  </div>
+  <div class="login-panel-right">
+    <div class="login-inner">
+      <div class="login-heading">Sign in</div>
+      <div class="login-sub">Access your account to continue</div>
+      <div class="role-tabs">
+        <button class="rtab active" data-tab="teacher">Teacher</button>
+        <button class="rtab" data-tab="student">Student</button>
+      </div>
+      <div class="login-err" id="login-err"></div>
+      <div class="lform active" id="form-teacher">
+        <div class="lfield"><label>Username</label><input type="text" id="t-user" placeholder="e.g. teacher1" autocomplete="off"/></div>
+        <div class="lfield"><label>Password</label><input type="password" id="t-pw" placeholder="Enter password"/></div>
+        <button class="login-btn" id="btn-tlogin">Sign In</button>
+        <div class="demo-creds">
+          <div class="dc-title">Demo Accounts</div>
+          <table><tr><td>teacher1</td><td>pass123</td></tr><tr><td>teacher2</td><td>pass123</td></tr></table>
+        </div>
+      </div>
+      <div class="lform" id="form-student">
+        <div class="lfield"><label>Username</label><input type="text" id="s-user" placeholder="e.g. student1" autocomplete="off"/></div>
+        <div class="lfield"><label>Password</label><input type="password" id="s-pw" placeholder="Enter password"/></div>
+        <button class="login-btn" id="btn-slogin">Sign In</button>
+        <div class="demo-creds">
+          <div class="dc-title">Demo Accounts</div>
+          <table><tr><td>student1 – student4</td><td>pass123</td></tr></table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+ 
+<!-- ===== APP ===== -->
+<div id="app-screen">
+  <aside id="sidebar">
+    <div class="sb-brand"><h1>School <span>Portal</span></h1><small>Record Management</small><p class="sb-comment">Manage students, grades &amp; attendance</p></div>
+    <nav>
+      <div class="sb-section">Records</div>
+      <a class="nav-link teacher-only" data-page="students">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>Students
+      </a>
+      <a class="nav-link" data-page="grades">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>Grades
+      </a>
+      <a class="nav-link" data-page="attendance">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Attendance
+      </a>
+      <a class="nav-link teacher-only" data-page="sections">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>Sections
+      </a>
+      <div class="sb-section teacher-only">System</div>
+      <a class="nav-link teacher-only" data-page="reports">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>Reports
+      </a>
+      <a class="nav-link teacher-only" data-page="settings">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg>Clear Data
+      </a>
+    </nav>
+    <div class="sb-user">
+      <div class="sb-av" id="sb-av">?</div>
+      <div><div class="sb-name" id="sb-name">—</div><div class="sb-role" id="sb-role">—</div></div>
+    </div>
+    <div class="sb-footer">
+      <button id="btn-sidebar-logout">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Sign Out
+      </button>
+    </div>
+  </aside>
+  <div class="mob-cover" id="mob-cover"></div>
+ 
+  <main id="main">
+    <header id="topbar">
+      <div class="tb-left">
+        <button class="hbg" id="hbg">&#9776;</button>
+        <span id="topbar-title">Grades</span>
+      </div>
+      <div class="tb-right">
+      </div>
+    </header>
+ 
+    <div id="content">
+ 
+      <!-- STUDENTS -->
+      <section class="page" id="page-students">
+        <div class="ph">
+          <div><h3>Students</h3><p>Manage all student records</p></div>
+          <button class="btn btn-primary" id="btn-add-student">+ Add Student</button>
+        </div>
+        <div class="fbar">
+          <input type="text" id="search-students" placeholder="Search by name or ID…"/>
+          <select id="filter-section-students"><option value="">All Sections</option></select>
+        </div>
+        <div class="card"><div class="card-body p0 tw">
+          <table><thead><tr><th>ID</th><th>Name</th><th>Section</th><th>Contact</th><th>Actions</th></tr></thead>
+          <tbody id="students-tbody"></tbody></table>
+        </div></div>
+      </section>
+ 
+      <!-- GRADES -->
+      <section class="page" id="page-grades">
+        <div class="ph">
+          <div><h3>Grades</h3><p>Student grade records per subject and quarter</p></div>
+          <button class="btn btn-primary teacher-only" id="btn-add-grade">+ Record Grade</button>
+        </div>
+        <div class="fbar">
+          <input type="text" id="search-grades" placeholder="Search by student name…"/>
+          <select id="filter-section-grades"><option value="">All Sections</option></select>
+          <select id="filter-subject-grades"><option value="">All Subjects</option></select>
+          <select id="filter-period-grades"><option value="">All Quarters</option><option value="Q1">Q1</option><option value="Q2">Q2</option><option value="Q3">Q3</option><option value="Q4">Q4</option></select>
+        </div>
+        <div class="card"><div class="card-body p0 tw">
+          <table><thead><tr><th>Student</th><th>Subject</th><th>Quarter</th><th>Grade</th><th>Remarks</th><th>Actions</th></tr></thead>
+          <tbody id="grades-tbody"></tbody></table>
+        </div></div>
+      </section>
+ 
+      <!-- ATTENDANCE -->
+      <section class="page" id="page-attendance">
+        <div class="ph">
+          <div><h3>Attendance</h3><p>Daily attendance records</p></div>
+          <button class="btn btn-primary teacher-only" id="btn-add-attendance">+ Log Attendance</button>
+        </div>
+        <div class="fbar">
+          <input type="text" id="search-attendance" placeholder="Search by student name…"/>
+          <select id="filter-section-attendance"><option value="">All Sections</option></select>
+          <select id="filter-status-attendance"><option value="">All Status</option><option value="Present">Present</option><option value="Absent">Absent</option><option value="Late">Late</option></select>
+        </div>
+        <div class="card"><div class="card-body p0 tw">
+          <table><thead><tr><th>Student</th><th>Date</th><th>Status</th><th>Section</th><th>Remarks</th><th>Actions</th></tr></thead>
+          <tbody id="attendance-tbody"></tbody></table>
+        </div></div>
+      </section>
+ 
+      <!-- SECTIONS -->
+      <section class="page" id="page-sections">
+        <div class="ph">
+          <div><h3>Sections</h3><p>Manage class sections and adviser assignments</p></div>
+          <button class="btn btn-primary" id="btn-add-section">+ Add Section</button>
+        </div>
+        <div class="fbar"><input type="text" id="search-sections" placeholder="Search sections…"/></div>
+        <div class="sec-grid" id="sections-grid"></div>
+      </section>
+ 
+      <!-- USERS -->
+      <!-- REPORTS -->
+      <section class="page" id="page-reports">
+        <div class="ph"><div><h3>Reports</h3><p>Generate student performance reports</p></div></div>
+        <div class="card">
+          <div class="card-head"><h4>Report Generator</h4></div>
+          <div class="card-body">
+            <div class="fr3">
+              <div class="fg"><label class="fl">Section</label><select id="report-section-filter" class="fc"><option value="">All Sections</option></select></div>
+              <div class="fg"><label class="fl">Report Type</label>
+                <select id="report-type" class="fc"><option value="grades">Grade Report</option><option value="attendance">Attendance Report</option></select>
+              </div>
+              <div class="fg" style="display:flex;align-items:flex-end"><button class="btn btn-primary" id="btn-generate-report" style="width:100%">Generate</button></div>
+            </div>
+          </div>
+        </div>
+        <div id="report-output"></div>
+      </section>
+ 
+      <!-- SETTINGS -->
+      <section class="page" id="page-settings">
+        <div class="ph"><div><h3>Settings</h3><p>Manage application data</p></div></div>
+        <div class="card" style="max-width:440px">
+          <div class="card-head"><h4>Clear Data</h4></div>
+          <div class="card-body">
+            <p style="font-size:.8rem;color:var(--muted);line-height:1.7;margin-bottom:14px">
+              Permanently erase all students, sections, grades, and attendance records. User accounts and your current session will be kept. This cannot be undone.
+            </p>
+            <button class="btn btn-danger" id="btn-clear-data">Clear All Data</button>
+          </div>
+        </div>
+      </section>
+ 
+    </div>
+  </main>
+</div>
+ 
+<div id="toasts"></div>
+ 
+<!-- ===== MODALS ===== -->
+<div id="student-modal" class="overlay" style="display:none">
+  <div class="mbox">
+    <div class="mhead"><h3 id="smo-title">Add Student</h3><button class="mclose" data-close="student-modal">&times;</button></div>
+    <div class="mbody">
+      <input type="hidden" id="s-id"/>
+      <div class="fr2">
+        <div class="fg"><label class="fl">First Name *</label><input type="text" id="s-fname" class="fc"/><span class="field-error" id="fe-fname"></span></div>
+        <div class="fg"><label class="fl">Last Name *</label><input type="text" id="s-lname" class="fc"/><span class="field-error" id="fe-lname"></span></div>
+      </div>
+      <div class="fr2">
+        <div class="fg"><label class="fl">Birthday</label><input type="date" id="s-bdate" class="fc"/></div>
+      </div>
+      <div class="fr2">
+        <div class="fg"><label class="fl">Section *</label><select id="s-section" class="fc"><option value="">— select —</option></select><span class="field-error" id="fe-section"></span></div>
+        <div class="fg"><label class="fl">Grade Level</label><select id="s-grade" class="fc"><option>7</option><option>8</option><option>9</option><option>10</option><option>11</option><option>12</option></select></div>
+      </div>
+      <div class="fr2">
+        <div class="fg"><label class="fl">Contact *</label><input type="text" id="s-contact" class="fc" placeholder="09XXXXXXXXX"/><span class="field-error" id="fe-contact"></span></div>
+        <div class="fg"><label class="fl">Address</label><input type="text" id="s-address" class="fc" placeholder="City / Municipality"/></div>
+      </div>
+    </div>
+    <div class="mfoot"><button class="btn btn-ghost" data-close="student-modal">Cancel</button><button class="btn btn-primary" id="save-student">Save</button></div>
+  </div>
+</div>
+ 
+<div id="grade-modal" class="overlay" style="display:none">
+  <div class="mbox">
+    <div class="mhead"><h3 id="gmo-title">Record Grade</h3><button class="mclose" data-close="grade-modal">&times;</button></div>
+    <div class="mbody">
+      <input type="hidden" id="g-id"/>
+      <div class="fg"><label class="fl">Student *</label><select id="g-student" class="fc"><option value="">— select —</option></select><span class="field-error" id="fe-g-student"></span></div>
+      <div class="fr2">
+        <div class="fg"><label class="fl">Subject *</label>
+          <select id="g-subject" class="fc"><option value="">— select —</option><option>Mathematics</option><option>Science</option><option>English</option><option>Filipino</option><option>Araling Panlipunan</option><option>MAPEH</option><option>TLE</option><option>Values Education</option></select>
+          <span class="field-error" id="fe-g-subject"></span>
+        </div>
+        <div class="fg"><label class="fl">Quarter</label><select id="g-quarter" class="fc"><option value="Q1">Q1</option><option value="Q2">Q2</option><option value="Q3">Q3</option><option value="Q4">Q4</option></select></div>
+      </div>
+      <div class="fg"><label class="fl">Grade (0–100) *</label><input type="number" id="g-grade" class="fc" min="0" max="100" placeholder="e.g. 88"/><span class="field-error" id="fe-g-grade"></span></div>
+    </div>
+    <div class="mfoot"><button class="btn btn-ghost" data-close="grade-modal">Cancel</button><button class="btn btn-primary" id="save-grade">Save</button></div>
+  </div>
+</div>
+ 
+<div id="att-modal" class="overlay" style="display:none">
+  <div class="mbox">
+    <div class="mhead"><h3 id="atmo-title">Log Attendance</h3><button class="mclose" data-close="att-modal">&times;</button></div>
+    <div class="mbody">
+      <input type="hidden" id="at-id"/>
+      <div class="fg"><label class="fl">Student *</label><select id="at-student" class="fc"><option value="">— select —</option></select><span class="field-error" id="fe-at-student"></span></div>
+      <div class="fr2">
+        <div class="fg"><label class="fl">Date *</label><input type="date" id="at-date" class="fc"/><span class="field-error" id="fe-at-date"></span></div>
+        <div class="fg"><label class="fl">Status</label><select id="at-status" class="fc"><option value="Present">Present</option><option value="Absent">Absent</option><option value="Late">Late</option></select></div>
+      </div>
+      <div class="fg"><label class="fl">Remarks (optional)</label><input type="text" id="at-remarks" class="fc" placeholder="Optional"/></div>
+    </div>
+    <div class="mfoot"><button class="btn btn-ghost" data-close="att-modal">Cancel</button><button class="btn btn-primary" id="save-att">Save</button></div>
+  </div>
+</div>
+ 
+<div id="section-modal" class="overlay" style="display:none">
+  <div class="mbox">
+    <div class="mhead"><h3 id="secmo-title">Add Section</h3><button class="mclose" data-close="section-modal">&times;</button></div>
+    <div class="mbody">
+      <input type="hidden" id="sec-id"/>
+      <div class="fg"><label class="fl">Section Name *</label><input type="text" id="sec-name" class="fc" placeholder="e.g. Grade 7 - Rizal"/><span class="field-error" id="fe-sec-name"></span></div>
+      <div class="fr2">
+        <div class="fg"><label class="fl">Grade Level</label><select id="sec-grade" class="fc"><option>7</option><option>8</option><option>9</option><option>10</option><option>11</option><option>12</option></select></div>
+        <div class="fg"><label class="fl">Room</label><input type="text" id="sec-room" class="fc" placeholder="Room 101"/></div>
+      </div>
+      <div class="fg"><label class="fl">Assigned Teacher</label><select id="sec-teacher" class="fc"><option value="">— select —</option></select></div>
+    </div>
+    <div class="mfoot"><button class="btn btn-ghost" data-close="section-modal">Cancel</button><button class="btn btn-primary" id="save-section">Save</button></div>
+  </div>
+</div>
+ 
+<div id="confirm-modal" class="overlay" style="display:none">
+  <div class="mbox" style="max-width:370px">
+    <div class="mhead"><h3>Confirm Delete</h3><button class="mclose" data-close="confirm-modal">&times;</button></div>
+    <div class="mbody"><p class="confirm-msg" id="confirm-msg"></p></div>
+    <div class="mfoot"><button class="btn btn-ghost" data-close="confirm-modal">Cancel</button><button class="btn btn-danger" id="confirm-ok">Delete</button></div>
+  </div>
+</div>
+ 
+<!-- ===== JAVASCRIPT ===== -->
+  <!-- External JavaScript -->
+  <script src="script.js"></script>
+</body>
+</html>
